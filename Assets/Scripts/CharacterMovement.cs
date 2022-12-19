@@ -26,6 +26,9 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField, ReadOnly] private Vector2 _lookDir;
     [SerializeField, ReadOnly] private Vector3 _direction;
 
+    [Header("Attack")]
+    [SerializeField] 
+
     // [Header("Actions")]
     // [SerializeField] private InputActionProperty _movementAction;
     // [SerializeField] private InputActionProperty _attackAction;
@@ -62,15 +65,15 @@ public class CharacterMovement : MonoBehaviour
         horizontal_dir.y = _direction.z;
 
         if (_lookDir.sqrMagnitude > 0.1f) 
-            horizontal_dir = Vector2.Lerp(horizontal_dir, _lookDir.normalized, 1.0f - _lookSmoothing);
+            horizontal_dir = Vector2.Lerp(horizontal_dir, _lookDir, 1.0f - _lookSmoothing).normalized;
         else if (_moveDir.sqrMagnitude > 0.1f) 
-            horizontal_dir = Vector2.Lerp(horizontal_dir, _moveDir.normalized, 1.0f - _lookSmoothing);
+            horizontal_dir = Vector2.Lerp(horizontal_dir, _moveDir, 1.0f - _lookSmoothing).normalized;
         _direction.x = horizontal_dir.x;
         _direction.z = horizontal_dir.y;
 
         // --- Animation ---
         float dot_dir = Vector2.Dot(horizontal_dir.normalized, horizontal_vel.normalized);
-        bool running = horizontal_vel.magnitude > 0.8f;
+        bool running = _moveDir.magnitude > 0.1f;
         if (running)
             _playerVisual.LookAt(transform.position + _direction, Vector3.up);
         _playerAnimation.SetBool("Running", running);
@@ -86,7 +89,7 @@ public class CharacterMovement : MonoBehaviour
     }
 
     private void OnFire(InputValue value) {
-
+        _playerAnimation.SetTrigger("Attack");
     }
 
     private void OnDrawGizmos() {

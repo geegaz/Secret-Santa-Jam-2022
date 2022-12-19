@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6061156846031342588}
   m_Layer: 0
   m_Name: PlayerCharacter
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -107,6 +107,7 @@ MonoBehaviour:
   _lookSmoothing: 0.8
   _lookDir: {x: 0, y: 0}
   _direction: {x: 0, y: 0, z: 0}
+  _characterController: {fileID: 0}
 --- !u!1001 &4985917262244935188
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -208,13 +209,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &4985917262244935192
+--- !u!1 &5611593368788505212 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 635547659545568360, guid: a1c5150b4f5275743bd82c7d7e1e22df,
+    type: 3}
+  m_PrefabInstance: {fileID: 4985917262244935188}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5795359304698902857
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5328005219866757957}
+  m_GameObject: {fileID: 5611593368788505212}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
@@ -223,6 +230,6 @@ MonoBehaviour:
   outlineMode: 1
   outlineColor: {r: 0, g: 0, b: 0, a: 1}
   outlineWidth: 10
-  precomputeOutline: 1
+  precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
