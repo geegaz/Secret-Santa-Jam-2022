@@ -27,7 +27,7 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField, ReadOnly] private Vector3 _direction;
 
     [Header("Attack")]
-    [SerializeField] 
+    [SerializeField] private CharacterAttack _attackObject;
 
     // [Header("Actions")]
     // [SerializeField] private InputActionProperty _movementAction;
@@ -71,6 +71,9 @@ public class CharacterMovement : MonoBehaviour
         _direction.x = horizontal_dir.x;
         _direction.z = horizontal_dir.y;
 
+        if (_attackObject != null)
+            _attackObject.transform.position = transform.position + _direction * _lookOffset;
+
         // --- Animation ---
         float dot_dir = Vector2.Dot(horizontal_dir.normalized, horizontal_vel.normalized);
         bool running = _moveDir.magnitude > 0.1f;
@@ -78,7 +81,7 @@ public class CharacterMovement : MonoBehaviour
             _playerVisual.LookAt(transform.position + _direction, Vector3.up);
         _playerAnimation.SetBool("Running", running);
         _playerAnimation.SetFloat("Speed", (horizontal_vel.magnitude / _moveSpeed) * dot_dir);
-    }   
+    }
 
     private void OnMove(InputValue value) {
         _moveDir = value.Get<Vector2>();
@@ -89,6 +92,7 @@ public class CharacterMovement : MonoBehaviour
     }
 
     private void OnFire(InputValue value) {
+        // TODO: Call attack function on the _attackObject
         _playerAnimation.SetTrigger("Attack");
     }
 
