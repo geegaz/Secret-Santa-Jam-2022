@@ -13,17 +13,18 @@ public class CharacterMovement : MonoBehaviour
     
     [Header("Move")]
     [SerializeField] private float _moveSpeed = 10.0f;
-    [SerializeField, Range(0, 1)] private float _moveSpeedSmoothing = 0.05f;
+    [SerializeField, Range(0, 1)] private float _moveSpeedSmoothing = 0.8f;
     [SerializeField] private float _gravity = 10.0f;
     
     [SerializeField, ReadOnly] private Vector2 _moveDir;
     [SerializeField, ReadOnly] private Vector3 _velocity;
 
     [Header("Look")]
-    [SerializeField] private Transform _lookObject;
     [SerializeField] private float _lookOffset;
+    [SerializeField, Range(0, 1)] private float _lookSmoothing = 0.8f;
 
     [SerializeField, ReadOnly] private Vector2 _lookDir;
+    [SerializeField, ReadOnly] private Vector3 _direction;
 
     // [Header("Actions")]
     // [SerializeField] private InputActionProperty _movementAction;
@@ -56,23 +57,25 @@ public class CharacterMovement : MonoBehaviour
         _characterController.Move(_velocity * Time.deltaTime);
 
         // --- Look ---
-        Vector3 horizontal_look = Vector3.zero;
+        Vector2 horizontal_dir = Vector2.zero;
+        horizontal_dir.x = _direction.x;
+        horizontal_dir.y = _direction.z;
 
-        if (_lookDir.sqrMagnitude > 0.0f) {
-            horizontal_look.x = _lookDir.x;
-            horizontal_look.z = _lookDir.y;
-        }
-        else if (_moveDir.sqrMagnitude > 0.0f) {
-            horizontal_look.x = _moveDir.x;
-            horizontal_look.z = _moveDir.y;
-            
-        }
-        
-        if (horizontal_look.sqrMagnitude > 0.0f) {
-            _lookObject.LookAt(transform.position + horizontal_look, Vector3.up);
-            _lookObject.position = transform.position + horizontal_look * _lookOffset;
-        }
-    }
+        if (_lookDir.sqrMagnitude > 0.1f) 
+            horizontal_dir = Vector2.Lerp(horizontal_dir, _lookDir.normalized, 1.0f - _lookSmoothing);
+        else if (_moveDir.sqrMagnitude > 0.1f) 
+            horizontal_dir = Vector2.Lerp(horizontal_dir, _moveDir.normalized, 1.0f - _lookSmoothing);
+        _direction.x = horizontal_dir.x;
+        _direction.z = horizontal_dir.y;
+
+        // --- Animation ---
+        float dot_dir = Vector2.Dot(horizontal_dir.normalized, horizontal_vel.normalized);
+        bool running = horizontal_vel.magnitude > 0.8f;
+        if (running)
+            _playerVisual.LookAt(transform.position + _direction, Vector3.up);
+        _playerAnimation.SetBool("Running", running);
+        _playerAnimation.SetFloat("Speed", (horizontal_vel.magnitude / _moveSpeed) * dot_dir);
+    }   
 
     private void OnMove(InputValue value) {
         _moveDir = value.Get<Vector2>();
@@ -80,5 +83,15 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnLook(InputValue value) {
         _lookDir = value.Get<Vector2>();
+    }
+
+    private void OnFire(InputValue value) {
+
+    }
+
+    private void OnDrawGizmos() {
+        Vector3 dir_pos = transform.position + _direction * _lookOffset;
+        Gizmos.DrawLine(transform.position, dir_pos);
+        Gizmos.DrawWireSphere(dir_pos, 0.25f);
     }
 }
