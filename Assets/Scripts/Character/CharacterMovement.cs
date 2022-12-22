@@ -8,7 +8,8 @@ using NaughtyAttributes;
 [RequireComponent(typeof(PlayerInput))]
 public class CharacterMovement : MonoBehaviour
 {
-    [SerializeField] private Transform _playerVisual;
+    [SerializeField] private CharacterAttack _playerAttack;
+    [SerializeField] private CharacterVisual _playerVisual;
     [SerializeField] private Animator _playerAnimation;
     
     [Header("Move")]
@@ -25,9 +26,6 @@ public class CharacterMovement : MonoBehaviour
 
     [SerializeField, ReadOnly] private Vector2 _lookDir;
     [SerializeField, ReadOnly] private Vector3 _direction;
-
-    [Header("Attack")]
-    [SerializeField] private CharacterAttack _attackObject;
 
     // [Header("Actions")]
     // [SerializeField] private InputActionProperty _movementAction;
@@ -71,16 +69,19 @@ public class CharacterMovement : MonoBehaviour
         _direction.x = horizontal_dir.x;
         _direction.z = horizontal_dir.y;
 
-        if (_attackObject != null)
-            _attackObject.transform.position = transform.position + _direction * _lookOffset;
-
-        // --- Animation ---
-        float dot_dir = Vector2.Dot(horizontal_dir.normalized, horizontal_vel.normalized);
-        bool running = _moveDir.magnitude > 0.1f;
-        if (running)
-            _playerVisual.LookAt(transform.position + _direction, Vector3.up);
-        _playerAnimation.SetBool("Running", running);
-        _playerAnimation.SetFloat("Speed", (horizontal_vel.magnitude / _moveSpeed) * dot_dir);
+        // --- Linked Objects ---
+        if (_playerAttack != null)
+            _playerAttack.transform.position = transform.position + _direction * _lookOffset;
+        
+        if (_playerVisual != null) {
+            float dot = Vector2.Dot(horizontal_dir.normalized, horizontal_vel.normalized);
+            float speed = horizontal_vel.magnitude / _moveSpeed;
+            bool running = speed > 0.1f;
+            if (running)
+                _playerVisual.transform.LookAt(transform.position + _direction, Vector3.up);
+            _playerAnimation.SetBool("Running", running);
+            _playerAnimation.SetFloat("Speed", speed * dot);
+        }
     }
 
     private void OnMove(InputValue value) {
@@ -92,8 +93,10 @@ public class CharacterMovement : MonoBehaviour
     }
 
     private void OnFire(InputValue value) {
-        // TODO: Call attack function on the _attackObject
-        _playerAnimation.SetTrigger("Attack");
+        if (_playerAttack != null && _playerAttack.canAttack) {
+            _playerAttack.Attack();
+            _playerAnimation.SetTrigger("Attack");
+        }
     }
 
     private void OnDrawGizmos() {

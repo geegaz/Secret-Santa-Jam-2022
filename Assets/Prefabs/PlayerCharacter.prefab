@@ -97,7 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eff708eb59a7fa4d92e6a7989095dce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerVisual: {fileID: 4808489976061071871}
+  _playerAttack: {fileID: 2211174780828028289}
+  _playerVisual: {fileID: 8692967064053971324}
   _playerAnimation: {fileID: 4985917262244935193}
   _moveSpeed: 8
   _moveSpeedSmoothing: 0.8
@@ -108,7 +109,6 @@ MonoBehaviour:
   _lookSmoothing: 0.8
   _lookDir: {x: 0, y: 0}
   _direction: {x: 0, y: 0, z: 0}
-  _attackObject: {fileID: 2211174780828028289}
 --- !u!1 &8086318004682273232
 GameObject:
   m_ObjectHideFlags: 0
@@ -167,6 +167,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f924be5b660fe044485e97fd7733e014, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponObject: {fileID: 0}
+  weaponData: {fileID: 0}
+  _attackCooldown: 0
+  _cooldown: 0
 --- !u!1001 &4985917262244935188
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -268,6 +272,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &8692967064053971324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5328005219866757957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 689c3baaac581b24c9ef13eb161dff6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5611593368788505212 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 635547659545568360, guid: a1c5150b4f5275743bd82c7d7e1e22df,
